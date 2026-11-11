@@ -851,6 +851,29 @@ interface Item {
 > [!NOTE]
 > This is an experimental feature that we'll be actively improving based on user feedback and real-world usage
 
+#### Call-Graph Mode (`--compress-mode calls`)
+
+`--compress-mode calls` (implies `--compress`) keeps one line per declaration, indented by nesting, followed by the calls its body makes. Comments, bodies and initializer values are dropped:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, _repo.SaveAsync, .ConfigureAwait
+```
+
+Supported for C#, Go, Java, JavaScript, Python, Rust and TypeScript; other languages use the default `signatures` mode.
+
+To run it from this repository's source:
+
+```bash
+git clone -b ccr-5b8b4a8d-us7mq7 https://github.com/EthanWM/repomix.git
+cd repomix && npm ci && npm run build
+
+# Run from the target repo, not from inside repomix (its repomix.config.json would apply)
+cd /path/to/your/repo
+node /path/to/repomix/bin/repomix.cjs --compress-mode calls --include "**/*.cs" -o calls.txt
+```
+
 ### Per-file Inclusion Levels (`output.patterns`)
 
 While `--compress` applies one level to every file, `output.patterns` lets you control the detail level **per glob** from your config file. Each entry targets files by glob (matched the same way as `include`/`ignore`) and overrides the global `output.compress` setting for matching files:
