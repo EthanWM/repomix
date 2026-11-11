@@ -29,6 +29,7 @@ description: Reference every Repomix CLI option for input, output, file selectio
 | `--output-file-path-style <style>` | How file paths are shown in output: `target-relative` or `cwd-relative` (default: `target-relative`) |
 | `--parsable-style` | Escape special characters to ensure valid XML/Markdown (needed when output contains code that breaks formatting) |
 | `--compress` | Extract essential code structure (classes, functions, interfaces) using Tree-sitter parsing |
+| `--compress-mode <mode>` | Compression detail, implies `--compress`: `signatures` (default) keeps declarations and comments; `calls` keeps a declaration outline with the calls each function makes |
 | `--output-show-line-numbers` | Prefix each line with its line number in the output |
 | `--no-file-summary` | Omit the file summary section from output |
 | `--no-directory-structure` | Omit the directory tree visualization from output |

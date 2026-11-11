@@ -1,4 +1,12 @@
+import type { CallGraphSpec } from './callGraph/callGraphTypes.js';
+import { csharpCallGraphSpec } from './callGraph/specs/csharpSpec.js';
+import { goCallGraphSpec } from './callGraph/specs/goSpec.js';
+import { javaCallGraphSpec } from './callGraph/specs/javaSpec.js';
+import { pythonCallGraphSpec } from './callGraph/specs/pythonSpec.js';
+import { rustCallGraphSpec } from './callGraph/specs/rustSpec.js';
+import { typescriptCallGraphSpec } from './callGraph/specs/typescriptSpec.js';
 import type { ParseStrategy } from './parseStrategies/BaseParseStrategy.js';
+import { CSharpParseStrategy } from './parseStrategies/CSharpParseStrategy.js';
 import { CssParseStrategy } from './parseStrategies/CssParseStrategy.js';
 import { DefaultParseStrategy } from './parseStrategies/DefaultParseStrategy.js';
 import { GoParseStrategy } from './parseStrategies/GoParseStrategy.js';
@@ -55,6 +63,11 @@ export interface LanguageConfig {
   query: string;
   /** Factory function to create parse strategy instance (lazy initialization) */
   createStrategy: () => ParseStrategy;
+  /**
+   * Grammar description for the `calls` compress mode. Languages without one
+   * fall back to the `signatures` mode.
+   */
+  callGraph?: CallGraphSpec;
 }
 
 /**
@@ -67,42 +80,49 @@ export const LANGUAGE_CONFIGS: readonly LanguageConfig[] = [
     extensions: ['js', 'jsx', 'cjs', 'mjs', 'mjsx'],
     query: queryJavascript,
     createStrategy: () => new TypeScriptParseStrategy(), // JavaScript uses TypeScript strategy
+    callGraph: typescriptCallGraphSpec,
   },
   {
     name: 'typescript',
     extensions: ['ts', 'tsx', 'mts', 'mtsx', 'cts'],
     query: queryTypescript,
     createStrategy: () => new TypeScriptParseStrategy(),
+    callGraph: typescriptCallGraphSpec,
   },
   {
     name: 'python',
     extensions: ['py'],
     query: queryPython,
     createStrategy: () => new PythonParseStrategy(),
+    callGraph: pythonCallGraphSpec,
   },
   {
     name: 'go',
     extensions: ['go'],
     query: queryGo,
     createStrategy: () => new GoParseStrategy(),
+    callGraph: goCallGraphSpec,
   },
   {
     name: 'rust',
     extensions: ['rs'],
     query: queryRust,
     createStrategy: () => new DefaultParseStrategy(),
+    callGraph: rustCallGraphSpec,
   },
   {
     name: 'java',
     extensions: ['java'],
     query: queryJava,
     createStrategy: () => new DefaultParseStrategy(),
+    callGraph: javaCallGraphSpec,
   },
   {
     name: 'c_sharp',
     extensions: ['cs'],
     query: queryCSharp,
-    createStrategy: () => new DefaultParseStrategy(),
+    createStrategy: () => new CSharpParseStrategy(),
+    callGraph: csharpCallGraphSpec,
   },
   {
     name: 'ruby',

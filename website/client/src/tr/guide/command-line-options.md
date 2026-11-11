@@ -29,6 +29,7 @@ description: "Girdi, çıktı, dosya seçimi, uzak depolar, yapılandırma, güv
 | `--output-file-path-style <style>` | Çıktıda dosya yollarının gösterilme biçimi: `target-relative` veya `cwd-relative` (varsayılan: `target-relative`) |
 | `--parsable-style` | Geçerli XML/Markdown sağlamak için özel karakterleri kaçış karakteriyle işle (çıktı biçimlendirmeyi bozan kod içerdiğinde gereklidir) |
 | `--compress` | Tree-sitter ayrıştırmasını kullanarak temel kod yapısını (sınıflar, fonksiyonlar, arayüzler) çıkar |
+| `--compress-mode <mode>` | Sıkıştırma ayrıntı düzeyi, `--compress` seçeneğini de etkinleştirir: `signatures` (varsayılan) bildirimleri ve yorumları korur; `calls` her fonksiyonun çağrılarıyla birlikte bildirim taslağını korur |
 | `--output-show-line-numbers` | Çıktıda her satırın önüne satır numarası ekle |
 | `--no-file-summary` | Çıktıdan dosya özeti bölümünü çıkar |
 | `--no-directory-structure` | Çıktıdan dizin ağacı görselleştirmesini çıkar |

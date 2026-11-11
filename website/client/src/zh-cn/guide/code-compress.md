@@ -115,6 +115,64 @@ interface Item {
 - `--remove-empty-lines`: 移除空行
 - `--output-show-line-numbers`: 在输出中添加行号
 
+## 压缩模式
+
+`--compress-mode` 用于选择压缩保留的详细程度，并会同时启用 `--compress`：
+
+| 模式 | 输出 |
+|------|--------|
+| `signatures` | 声明、签名和注释（与上面的示例相同） |
+| `calls` | 每个声明一行，按嵌套层级缩进，后跟其函数体发出的调用。函数体、注释和初始化值会被删除 |
+
+```bash
+repomix --compress-mode calls
+```
+
+`calls` 模式保留调用图，因此输出只需少量 token 即可展示函数之间的控制流。以下 C# 代码：
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+会变为：
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` 按求值顺序列出函数体发出的调用，每个调用目标只出现一次。
+- 开头的点（`.ConfigureAwait`）表示在前一个调用的结果上发出的调用。
+- 以 `→` 开头的行列出顶层语句发出的调用。
+
+`calls` 模式支持 C#、Go、Java、JavaScript、Python、Rust 和 TypeScript。其他语言的文件使用 `signatures` 模式压缩。
+
+在配置文件中设置：
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## 相关资源
 
 - [注释移除](/zh-cn/guide/comment-removal) - 移除注释以进一步减少 Token 数量

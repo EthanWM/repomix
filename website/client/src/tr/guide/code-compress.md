@@ -116,6 +116,64 @@ Sıkıştırmayı diğer seçeneklerle birleştirebilirsiniz:
 - `--remove-empty-lines`: Boş satırları kaldırır
 - `--output-show-line-numbers`: Çıktıya satır numaraları ekler
 
+## Sıkıştırma Modları
+
+`--compress-mode`, sıkıştırmanın ne kadar ayrıntı koruyacağını seçer ve `--compress` seçeneğini de etkinleştirir:
+
+| Mod | Çıktı |
+|------|--------|
+| `signatures` | Bildirimler, imzalar ve yorumlar (yukarıdaki örnekte olduğu gibi) |
+| `calls` | Bildirim başına bir satır, iç içe geçmeye göre girintili, ardından gövdesinin yaptığı çağrılar. Gövdeler, yorumlar ve başlangıç değerleri kaldırılır |
+
+```bash
+repomix --compress-mode calls
+```
+
+`calls` modu çağrı grafiğini korur; böylece çıktı, kontrolün fonksiyonlar arasında nasıl aktığını çok daha az token ile gösterir. Bu C# kodu:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+şuna dönüşür:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→`, bir gövdenin yaptığı çağrıları değerlendirme sırasıyla, her hedefi bir kez listeler.
+- Baştaki nokta (`.ConfigureAwait`), önceki çağrının sonucu üzerinde yapılan çağrıyı belirtir.
+- `→` ile başlayan satır, üst düzey ifadelerin yaptığı çağrıları listeler.
+
+`calls` modu C#, Go, Java, JavaScript, Python, Rust ve TypeScript dillerini destekler. Diğer dillerdeki dosyalar `signatures` moduyla sıkıştırılır.
+
+Yapılandırma dosyanızda ayarlamak için:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## İlgili Kaynaklar
 
 - [Yorum Kaldırma](/tr/guide/comment-removal) - Token sayısını daha da azaltmak için yorumları kaldırın

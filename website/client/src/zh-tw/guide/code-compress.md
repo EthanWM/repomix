@@ -115,6 +115,64 @@ interface Item {
 - `--remove-empty-lines`: 移除空行
 - `--output-show-line-numbers`: 在輸出中添加行號
 
+## 壓縮模式
+
+`--compress-mode` 用於選擇壓縮保留的詳細程度，並會同時啟用 `--compress`：
+
+| 模式 | 輸出 |
+|------|--------|
+| `signatures` | 宣告、簽章和註解（與上面的範例相同） |
+| `calls` | 每個宣告一行，依巢狀層級縮排，後接其函式本體發出的呼叫。函式本體、註解和初始值會被移除 |
+
+```bash
+repomix --compress-mode calls
+```
+
+`calls` 模式保留呼叫圖，因此輸出只需少量 token 即可呈現函式之間的控制流程。以下 C# 程式碼：
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+會變成：
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` 依求值順序列出函式本體發出的呼叫，每個呼叫目標只出現一次。
+- 開頭的點（`.ConfigureAwait`）表示在前一個呼叫的結果上發出的呼叫。
+- 以 `→` 開頭的行列出頂層陳述式發出的呼叫。
+
+`calls` 模式支援 C#、Go、Java、JavaScript、Python、Rust 和 TypeScript。其他語言的檔案使用 `signatures` 模式壓縮。
+
+在設定檔中設定：
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## 相關資源
 
 - [註釋移除](/zh-tw/guide/comment-removal) - 移除註釋以進一步減少令牌數量

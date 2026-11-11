@@ -117,6 +117,64 @@ Anda dapat menggabungkan kompresi dengan opsi lain:
 - `--remove-empty-lines`: Menghapus baris kosong
 - `--output-show-line-numbers`: Menambahkan nomor baris ke output
 
+## Mode Kompresi
+
+`--compress-mode` memilih seberapa banyak detail yang dipertahankan kompresi, dan sekaligus mengaktifkan `--compress`:
+
+| Mode | Keluaran |
+|------|--------|
+| `signatures` | Deklarasi, signature, dan komentar, seperti pada contoh di atas |
+| `calls` | Satu baris per deklarasi, diindentasi sesuai tingkat sarang, diikuti panggilan yang dilakukan oleh body-nya. Body, komentar, dan nilai inisialisasi dihapus |
+
+```bash
+repomix --compress-mode calls
+```
+
+Mode `calls` mempertahankan call graph, sehingga keluaran menunjukkan alur kontrol antar fungsi dengan sebagian kecil token. Kode C# ini:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+menjadi:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` mencantumkan panggilan yang dilakukan sebuah body sesuai urutan evaluasi, setiap target hanya sekali.
+- Titik di depan (`.ConfigureAwait`) menandai panggilan pada hasil panggilan sebelumnya.
+- Baris yang diawali `→` mencantumkan panggilan dari pernyataan tingkat atas.
+
+Mode `calls` mendukung C#, Go, Java, JavaScript, Python, Rust, dan TypeScript. File dalam bahasa lain dikompresi dengan mode `signatures`.
+
+Untuk mengaturnya di file konfigurasi Anda:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## Sumber Daya Terkait
 
 - [Penghapusan Komentar](/id/guide/comment-removal) - Hapus komentar untuk mengurangi jumlah token lebih lanjut

@@ -97,6 +97,7 @@ JavaScript設定ファイルはTypeScriptと同様に機能し、`defineConfig`�
 | `output.filePathStyle`           | 出力内でのファイルパスの表示方法（`target-relative` は各ターゲットルートからの相対パス、`cwd-relative` はカレントワーキングディレクトリからの相対パスを使用）   | `"target-relative"`    |
 | `output.parsableStyle`           | 選択したスタイルスキーマに基づいて出力をエスケープするかどうか。より良い解析が可能になりますが、トークン数が増加する可能性があります | `false`                |
 | `output.compress`                | Tree-sitterを使用してインテリジェントなコード抽出を実行し、構造を保持しながらトークン数を削減するかどうか                  | `false`                |
+| `output.compressMode`            | 圧縮の詳細度：`"signatures"`は宣言、シグネチャ、コメントを保持し、`"calls"`は各関数の呼び出しを含む宣言のアウトラインを保持します。[コード圧縮](code-compress)を参照 | `"signatures"`         |
 | `output.patterns`                | ファイルごとのインクルードレベル。`{ pattern, compress?, directoryStructureOnly? }`エントリの順序付き配列で、最初にマッチしたglobが優先され、そのファイルに対するグローバルな`output.compress`を上書きします。[ファイルごとのインクルードレベル](#ファイルごとのインクルードレベル)を参照してください | 未設定                 |
 | `output.headerText`              | ファイルヘッダーに含めるカスタムテキスト。AIツールにコンテキストや指示を提供するのに便利です                              | `null`                 |
 | `output.instructionFilePath`     | AI処理用の詳細なカスタム指示を含むファイルへのパス                                                                          | `null`                 |

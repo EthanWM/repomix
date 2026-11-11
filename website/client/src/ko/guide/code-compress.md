@@ -116,6 +116,64 @@ interface Item {
 - `--remove-empty-lines`: 빈 줄 제거
 - `--output-show-line-numbers`: 출력에 줄 번호 추가
 
+## 압축 모드
+
+`--compress-mode`는 압축 시 유지할 세부 수준을 선택하며, `--compress`도 함께 활성화합니다:
+
+| 모드 | 출력 |
+|------|--------|
+| `signatures` | 선언, 시그니처, 주석 (위 예시와 동일) |
+| `calls` | 선언당 한 줄로, 중첩에 따라 들여쓰고 그 본문이 수행하는 호출을 이어서 표시합니다. 본문, 주석, 초기화 값은 제거됩니다 |
+
+```bash
+repomix --compress-mode calls
+```
+
+`calls` 모드는 호출 그래프를 유지하므로, 적은 토큰으로 함수 간 제어 흐름을 보여줍니다. 다음 C# 코드는:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+다음과 같이 됩니다:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→`는 본문이 수행하는 호출을 평가 순서대로 나열하며, 같은 대상은 한 번만 표시합니다.
+- 앞에 붙은 점(`.ConfigureAwait`)은 직전 호출의 결과에 대한 호출을 뜻합니다.
+- `→`로 시작하는 줄은 최상위 문이 수행하는 호출을 나열합니다.
+
+`calls` 모드는 C#, Go, Java, JavaScript, Python, Rust, TypeScript를 지원합니다. 다른 언어의 파일은 `signatures` 모드로 압축됩니다.
+
+설정 파일에서 지정하려면:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## 관련 리소스
 
 - [주석 제거](/ko/guide/comment-removal) - 주석을 제거하여 토큰 수를 더 줄이기

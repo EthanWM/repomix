@@ -29,6 +29,7 @@ description: "입력, 출력, 파일 선택, 원격 저장소, 설정, 보안, �
 | `--output-file-path-style <style>` | 출력에 파일 경로를 표시하는 방식: `target-relative` 또는 `cwd-relative` (기본값: `target-relative`) |
 | `--parsable-style` | 유효한 XML/Markdown을 보장하기 위해 특수 문자 이스케이프 (출력에 서식을 깨는 코드가 포함된 경우 필요) |
 | `--compress` | Tree-sitter 파싱을 사용하여 핵심 코드 구조 추출 (클래스, 함수, 인터페이스) |
+| `--compress-mode <mode>` | 압축 세부 수준(`--compress`도 활성화): `signatures`(기본값)는 선언과 주석을 유지하고, `calls`는 각 함수의 호출을 포함한 선언 개요를 유지 |
 | `--output-show-line-numbers` | 출력의 각 줄에 줄 번호 접두사 추가 |
 | `--no-file-summary` | 출력에서 파일 요약 섹션 생략 |
 | `--no-directory-structure` | 출력에서 디렉토리 트리 시각화 생략 |

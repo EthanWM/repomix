@@ -114,6 +114,64 @@ Puoi combinare la compressione con altre opzioni:
 - `--remove-empty-lines`: Rimuove le righe vuote
 - `--output-show-line-numbers`: Aggiunge numeri di riga all'output
 
+## Modalità di compressione
+
+`--compress-mode` sceglie quanto dettaglio mantiene la compressione e implica `--compress`:
+
+| Modalità | Output |
+|------|--------|
+| `signatures` | Dichiarazioni, firme e commenti, come nell'esempio sopra |
+| `calls` | Una riga per dichiarazione, indentata secondo l'annidamento, seguita dalle chiamate effettuate dal suo corpo. Corpi, commenti e valori di inizializzazione vengono rimossi |
+
+```bash
+repomix --compress-mode calls
+```
+
+La modalità `calls` mantiene il grafo delle chiamate, così l'output mostra come il controllo passa tra le funzioni con una frazione dei token. Questo codice C#:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+diventa:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` elenca le chiamate di un corpo in ordine di valutazione, ogni destinazione una sola volta.
+- Un punto iniziale (`.ConfigureAwait`) indica una chiamata sul risultato della chiamata precedente.
+- Una riga che inizia con `→` elenca le chiamate effettuate dalle istruzioni di primo livello.
+
+La modalità `calls` supporta C#, Go, Java, JavaScript, Python, Rust e TypeScript. I file in altri linguaggi vengono compressi con la modalità `signatures`.
+
+Per impostarla nel file di configurazione:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## Risorse correlate
 
 - [Rimozione Commenti](/it/guide/comment-removal) - Rimuovere i commenti per ridurre ulteriormente i token

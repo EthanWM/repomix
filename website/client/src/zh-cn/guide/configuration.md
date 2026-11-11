@@ -97,6 +97,7 @@ JavaScript 配置文件的工作方式与 TypeScript 相同，支持 `defineConf
 | `output.filePathStyle`           | 输出中文件路径的显示方式（`target-relative` 表示路径相对于各目标根目录，`cwd-relative` 表示路径相对于当前工作目录）                  | `"target-relative"`    |
 | `output.parsableStyle`           | 是否根据所选样式模式转义输出。可以提供更好的解析，但可能会增加 token 数量                                                    | `false`                |
 | `output.compress`                | 是否使用 Tree-sitter 执行智能代码提取，在保持结构的同时减少 token 数量                                                         | `false`                |
+| `output.compressMode`            | 压缩的详细程度：`"signatures"` 保留声明、签名和注释；`"calls"` 保留声明大纲以及每个函数发出的调用。参见[代码压缩](code-compress) | `"signatures"`         |
 | `output.patterns`                | 按文件设置包含级别。一个有序的 `{ pattern, compress?, directoryStructureOnly? }` 条目数组；第一个匹配的 glob 优先，并为该文件覆盖全局的 `output.compress`。参见[按文件设置包含级别](#按文件设置包含级别) | 未设置                 |
 | `output.headerText`              | 要包含在文件头部的自定义文本。对于为 AI 工具提供上下文或指令很有用                                                          | `null`                 |
 | `output.instructionFilePath`     | 包含用于 AI 处理的详细自定义指令的文件路径                                                                                   | `null`                 |

@@ -47,6 +47,13 @@ describe('analyzeContent', () => {
     expect(result.processing.compressed).toBe(true);
   });
 
+  it('should flag the call-graph outline only in calls mode', () => {
+    expect(analyzeContent(createMockConfig({ output: { compress: true } })).processing.callGraph).toBe(false);
+    expect(
+      analyzeContent(createMockConfig({ output: { compress: true, compressMode: 'calls' } })).processing.callGraph,
+    ).toBe(true);
+  });
+
   it('should not mark content as compressed when patterns only set directoryStructureOnly', () => {
     const config = createMockConfig({
       output: {
@@ -239,6 +246,15 @@ describe('generateSummaryNotes', () => {
     expect(notes).toContain('- Long base64 data strings (e.g., data:image/png;base64,...) have been truncated');
     expect(notes).toContain('- Files are sorted by Git change count');
     expect(notes).toContain('- Git diffs from the worktree and staged changes are included');
+  });
+
+  it('should explain the call-graph notation in calls mode instead of the ⋮---- delimiter', () => {
+    const config = createMockConfig({ output: { compress: true, compressMode: 'calls' } });
+    const notes = generateSummaryNotes(config);
+    expect(notes).toContain('- Content has been compressed to a call-graph outline');
+    expect(notes).toContain('"signature → a, b.c, .d" lists, in evaluation order, the calls made in that body');
+    expect(notes).not.toContain('- Content has been compressed - code blocks are separated by ⋮---- delimiter');
+    expect(generateHeader(config, '')).toContain('content has been compressed to a call-graph outline');
   });
 
   it.each([

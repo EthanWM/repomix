@@ -29,6 +29,7 @@ description: Input, output, file selection, remote repositories, configuration, 
 | `--output-file-path-style <style>` | आउटपुट में फ़ाइल पथ कैसे दिखाए जाएंगे: `target-relative` या `cwd-relative` (डिफ़ॉल्ट: `target-relative`) |
 | `--parsable-style` | वैध XML/Markdown सुनिश्चित करने के लिए विशेष वर्णों को एस्केप करें (जब आउटपुट में फ़ॉर्मेटिंग को तोड़ने वाला कोड हो तब आवश्यक) |
 | `--compress` | Tree-sitter पार्सिंग का उपयोग करके आवश्यक कोड संरचना (क्लास, फ़ंक्शन, इंटरफ़ेस) निकालें |
+| `--compress-mode <mode>` | कम्प्रेशन का विवरण स्तर, `--compress` को भी सक्षम करता है: `signatures` (डिफ़ॉल्ट) डिक्लेरेशन और कमेंट रखता है; `calls` हर फ़ंक्शन के कॉल के साथ डिक्लेरेशन की रूपरेखा रखता है |
 | `--output-show-line-numbers` | आउटपुट में प्रत्येक पंक्ति के आगे पंक्ति संख्या जोड़ें |
 | `--no-file-summary` | आउटपुट से फ़ाइल सारांश अनुभाग हटाएं |
 | `--no-directory-structure` | आउटपुट से डायरेक्टरी ट्री विज़ुअलाइज़ेशन हटाएं |

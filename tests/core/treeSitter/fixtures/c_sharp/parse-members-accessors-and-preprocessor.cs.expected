@@ -1,0 +1,24 @@
+global using System.Linq;
+using static System.Math;
+using Alias = System.Text.StringBuilder;
+namespace Acme.Legacy
+⋮----
+public partial class Café<T> : Base<T>, IDisposable where T : class, new()
+public int Value { get; set; }
+public string Name { get; init; } = "x";
+public int Doubled { get; }
+static Café()
+~Café()
+void IDisposable.Dispose()
+public abstract void Abs();
+[HttpGet("x")]
+[Authorize]
+public IEnumerable<int> Query(
+    int a,
+    int b)
+public event EventHandler Changed { add; remove; }
+⋮----
+public void DebugOnly()
+⋮----
+public record struct Point(int X, int Y);
+public interface IFoo

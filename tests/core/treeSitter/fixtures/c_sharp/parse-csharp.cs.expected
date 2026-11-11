@@ -2,9 +2,9 @@
 /// <summary>
 /// The main program class
 /// </summary>
-class Program {
+class Program
 // The main entry point
 /// <summary>
 /// Writes a greeting to the console
 /// </summary>
-static void Main() {
+static void Main()

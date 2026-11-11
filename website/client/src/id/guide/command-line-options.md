@@ -29,6 +29,7 @@ description: Referensi lengkap opsi CLI Repomix untuk input, output, pemilihan f
 | `--output-file-path-style <style>` | Cara jalur file ditampilkan dalam output: `target-relative` atau `cwd-relative` (default: `target-relative`) |
 | `--parsable-style` | Escape karakter khusus untuk memastikan XML/Markdown yang valid (diperlukan saat output berisi kode yang merusak format) |
 | `--compress` | Mengekstrak struktur kode esensial (kelas, fungsi, interface) menggunakan parsing Tree-sitter |
+| `--compress-mode <mode>` | Tingkat detail kompresi, sekaligus mengaktifkan `--compress`: `signatures` (default) mempertahankan deklarasi dan komentar; `calls` mempertahankan kerangka deklarasi beserta panggilan setiap fungsi |
 | `--output-show-line-numbers` | Menambahkan nomor baris di depan setiap baris dalam output |
 | `--no-file-summary` | Menghilangkan bagian ringkasan file dari output |
 | `--no-directory-structure` | Menghilangkan visualisasi pohon direktori dari output |

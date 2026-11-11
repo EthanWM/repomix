@@ -6,6 +6,14 @@ import { TOKEN_ENCODINGS } from '../core/metrics/tokenEncodings.js';
 export const repomixOutputStyleSchema = v.picklist(['xml', 'markdown', 'json', 'plain']);
 export type RepomixOutputStyle = v.InferOutput<typeof repomixOutputStyleSchema>;
 
+// Compress mode enum (output.compressMode), used when compression applies to a file.
+// - `signatures`: declarations and signatures with bodies removed (comments kept)
+// - `calls`: declarations as an outline, each callable followed by the calls its body
+//   makes; every other implementation detail and all comments are dropped. Languages
+//   without call-graph support fall back to `signatures`.
+export const repomixCompressModeSchema = v.picklist(['signatures', 'calls']);
+export type RepomixCompressMode = v.InferOutput<typeof repomixCompressModeSchema>;
+
 // Output file path style enum
 export const repomixOutputFilePathStyleSchema = v.picklist(['target-relative', 'cwd-relative']);
 export type RepomixOutputFilePathStyle = v.InferOutput<typeof repomixOutputFilePathStyleSchema>;
@@ -77,6 +85,7 @@ export const repomixConfigBaseSchema = v.object({
       removeComments: v.optional(v.boolean()),
       removeEmptyLines: v.optional(v.boolean()),
       compress: v.optional(v.boolean()),
+      compressMode: v.optional(repomixCompressModeSchema),
       patterns: v.optional(v.array(outputPatternSchema)),
       topFilesLength: v.optional(v.number()),
       showLineNumbers: v.optional(v.boolean()),
@@ -137,6 +146,7 @@ export const repomixConfigDefaultSchema = v.object({
     removeComments: v.optional(v.boolean(), false),
     removeEmptyLines: v.optional(v.boolean(), false),
     compress: v.optional(v.boolean(), false),
+    compressMode: v.optional(repomixCompressModeSchema, 'signatures'),
     topFilesLength: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0)), 5),
     showLineNumbers: v.optional(v.boolean(), false),
     truncateBase64: v.optional(v.boolean(), false),

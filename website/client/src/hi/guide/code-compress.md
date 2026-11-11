@@ -128,6 +128,64 @@ class AuthService {
 2. **बग खोजना**: कम्प्रेस्ड कोड में बग खोजना कठिन हो सकता है
 3. **AI समझ**: कुछ मामलों में, AI को कार्यान्वयन विवरण की आवश्यकता हो सकती है
 
+## कम्प्रेशन मोड
+
+`--compress-mode` तय करता है कि कम्प्रेशन कितना विवरण रखे, और यह `--compress` को भी सक्षम करता है:
+
+| मोड | आउटपुट |
+|------|--------|
+| `signatures` | डिक्लेरेशन, सिग्नेचर और कमेंट, ऊपर दिए गए उदाहरण की तरह |
+| `calls` | प्रति डिक्लेरेशन एक पंक्ति, नेस्टिंग के अनुसार इंडेंट की हुई, जिसके बाद उसकी बॉडी द्वारा किए गए कॉल आते हैं। बॉडी, कमेंट और इनिशियलाइज़र मान हटा दिए जाते हैं |
+
+```bash
+repomix --compress-mode calls
+```
+
+`calls` मोड कॉल ग्राफ़ को बनाए रखता है, इसलिए आउटपुट बहुत कम टोकन में दिखाता है कि फ़ंक्शनों के बीच नियंत्रण कैसे प्रवाहित होता है। यह C# कोड:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+बन जाता है:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` किसी बॉडी के कॉल को मूल्यांकन क्रम में सूचीबद्ध करता है, हर लक्ष्य केवल एक बार।
+- आगे लगा बिंदु (`.ConfigureAwait`) पिछले कॉल के परिणाम पर किए गए कॉल को दर्शाता है।
+- `→` से शुरू होने वाली पंक्ति टॉप-लेवल स्टेटमेंट द्वारा किए गए कॉल सूचीबद्ध करती है।
+
+`calls` मोड C#, Go, Java, JavaScript, Python, Rust और TypeScript का समर्थन करता है। अन्य भाषाओं की फ़ाइलें `signatures` मोड से कम्प्रेस की जाती हैं।
+
+इसे अपनी कॉन्फ़िगरेशन फ़ाइल में सेट करने के लिए:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## संबंधित संसाधन
 
 - [टिप्पणी हटाना](/hi/guide/comment-removal) - टोकन संख्या और कम करने के लिए टिप्पणियां हटाएं

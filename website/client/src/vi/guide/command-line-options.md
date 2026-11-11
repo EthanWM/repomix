@@ -29,6 +29,7 @@ description: Tham khảo mọi tùy chọn Repomix CLI cho input, output, chọn
 | `--output-file-path-style <style>` | Cách hiển thị đường dẫn tệp trong đầu ra: `target-relative` hoặc `cwd-relative` (mặc định: `target-relative`) |
 | `--parsable-style` | Escape các ký tự đặc biệt để đảm bảo XML/Markdown hợp lệ (cần thiết khi đầu ra chứa mã phá vỡ định dạng) |
 | `--compress` | Trích xuất cấu trúc mã cần thiết (lớp, hàm, interface) sử dụng phân tích Tree-sitter |
+| `--compress-mode <mode>` | Mức chi tiết khi nén, đồng thời bật `--compress`: `signatures` (mặc định) giữ khai báo và chú thích; `calls` giữ dàn ý khai báo kèm các lời gọi của mỗi hàm |
 | `--output-show-line-numbers` | Thêm số dòng trước mỗi dòng trong đầu ra |
 | `--no-file-summary` | Bỏ phần tóm tắt tệp khỏi đầu ra |
 | `--no-directory-structure` | Bỏ trực quan hóa cây thư mục khỏi đầu ra |

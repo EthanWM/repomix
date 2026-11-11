@@ -1,5 +1,10 @@
 import type { OptionValues } from 'commander';
-import type { OutputPattern, RepomixOutputFilePathStyle, RepomixOutputStyle } from '../config/configSchema.js';
+import type {
+  OutputPattern,
+  RepomixCompressMode,
+  RepomixOutputFilePathStyle,
+  RepomixOutputStyle,
+} from '../config/configSchema.js';
 
 export interface CliOptions extends OptionValues {
   // Basic Options
@@ -12,6 +17,7 @@ export interface CliOptions extends OptionValues {
   outputFilePathStyle?: RepomixOutputFilePathStyle;
   parsableStyle?: boolean;
   compress?: boolean;
+  compressMode?: RepomixCompressMode;
   // Internal: per-file inclusion levels (output.patterns). Not exposed as a CLI flag;
   // set programmatically by the MCP tools so an agent can build a packing scenario per call.
   outputPatterns?: OutputPattern[];

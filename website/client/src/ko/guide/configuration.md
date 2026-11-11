@@ -97,6 +97,7 @@ JavaScript 설정 파일은 TypeScript와 동일하게 작동하며 `defineConfi
 | `output.filePathStyle`           | 출력에 파일 경로를 표시하는 방식 (`target-relative`는 각 대상 루트에 대한 상대 경로를 유지하고, `cwd-relative`는 현재 작업 디렉토리에 대한 상대 경로를 유지합니다) | `"target-relative"`    |
 | `output.parsableStyle`           | 선택한 스타일 스키마에 따라 출력을 이스케이프할지 여부. 더 나은 구문 분석이 가능하지만 토큰 수가 증가할 수 있습니다      | `false`                |
 | `output.compress`                | Tree-sitter를 사용하여 구조를 유지하면서 토큰 수를 줄이기 위해 지능적인 코드 추출을 수행할지 여부                         | `false`                |
+| `output.compressMode`            | 압축 세부 수준: `"signatures"`는 선언, 시그니처, 주석을 유지하고, `"calls"`는 각 함수의 호출을 포함한 선언 개요를 유지합니다. [코드 압축](code-compress) 참조 | `"signatures"`         |
 | `output.patterns`                | 파일별 포함 수준. `{ pattern, compress?, directoryStructureOnly? }` 항목의 순서가 있는 배열이며, 처음으로 일치하는 glob이 우선하여 해당 파일에 대한 전역 `output.compress`를 덮어씁니다. [파일별 포함 수준](#파일별-포함-수준)을 참조하세요 | 미설정                 |
 | `output.headerText`              | 파일 헤더에 포함할 사용자 정의 텍스트. AI 도구에 컨텍스트나 지침을 제공하는 데 유용합니다                                | `null`                 |
 | `output.instructionFilePath`     | AI 처리를 위한 상세한 사용자 정의 지침이 포함된 파일 경로                                                                  | `null`                 |

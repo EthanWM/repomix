@@ -5,7 +5,7 @@
 /// <summary>
 /// XML documentation for class
 /// </summary>
-public class Test {
+public class Test
 /// <summary>
 /// Property documentation
 /// </summary>

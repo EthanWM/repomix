@@ -192,6 +192,64 @@ repomix --compress-code --remove-comments --style markdown
 
 Lệnh này sẽ tạo một đầu ra Markdown với mã đã nén và không có bình luận, giảm đáng kể kích thước đầu ra.
 
+## Các chế độ nén
+
+`--compress-mode` chọn mức chi tiết mà tính năng nén giữ lại, đồng thời bật `--compress`:
+
+| Chế độ | Đầu ra |
+|------|--------|
+| `signatures` | Khai báo, chữ ký và chú thích, như ví dụ ở trên |
+| `calls` | Mỗi khai báo một dòng, thụt lề theo cấp lồng nhau, kèm theo các lời gọi mà thân của nó thực hiện. Thân hàm, chú thích và giá trị khởi tạo bị loại bỏ |
+
+```bash
+repomix --compress-mode calls
+```
+
+Chế độ `calls` giữ lại đồ thị lời gọi, nên đầu ra cho thấy luồng điều khiển giữa các hàm chỉ với một phần nhỏ số token. Đoạn mã C# này:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+trở thành:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` liệt kê các lời gọi của một thân hàm theo thứ tự đánh giá, mỗi đích chỉ một lần.
+- Dấu chấm ở đầu (`.ConfigureAwait`) đánh dấu lời gọi trên kết quả của lời gọi trước đó.
+- Dòng bắt đầu bằng `→` liệt kê các lời gọi từ các câu lệnh cấp cao nhất.
+
+Chế độ `calls` hỗ trợ C#, Go, Java, JavaScript, Python, Rust và TypeScript. Các tệp thuộc ngôn ngữ khác được nén bằng chế độ `signatures`.
+
+Để thiết lập trong tệp cấu hình:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## Tài nguyên liên quan
 
 - [Xóa bình luận](/vi/guide/comment-removal) - Xóa bình luận để giảm thêm số lượng token

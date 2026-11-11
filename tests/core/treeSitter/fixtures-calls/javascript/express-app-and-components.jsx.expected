@@ -1,0 +1,10 @@
+const express → require
+import { render } from 'react-dom'
+const app → express
+→ express.json, app.use, db.users.findAll, users.map, res.json, app.get
+class UserList extends Component
+  static defaultProps
+  handleClick = (id) → this.props.onSelect
+  render() → <Layout>, <UserRow>, this.props.users.map, <Pager.Next>
+function* ids() → nextId
+→ setup, <UserList>, render, expect, .toBeTruthy, it, describe, console.log, app.listen

@@ -1,0 +1,18 @@
+from __future__ import annotations
+import logging
+from dataclasses import dataclass, field
+import ujson as json
+import json
+logger → logging.getLogger
+DEFAULT_TIMEOUT: float
+@dataclass class Order
+  id: str
+  lines: list[Line] → field
+  @property def total(self) -> float → sum
+class OrderService(BaseService)
+  registry → Registry
+  def __init__(self, repo: Repository, *, timeout: float = DEFAULT_TIMEOUT) -> None → super, .__init__
+  async def place(self, cart: Cart) -> Order → Order.from_cart, self._validate, logger.warning, ValidationError, inventory.reserve, self.repo.save, events.publish, notify
+  def _validate(self, order: Order) -> bool → positive, rule, all
+def main(argv=None) → parse_args, make_repo, OrderService, load_cart, service.place, asyncio.run
+→ main

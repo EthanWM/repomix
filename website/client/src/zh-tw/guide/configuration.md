@@ -97,6 +97,7 @@ JavaScript設定檔的工作方式與TypeScript相同，支援`defineConfig`和�
 | `output.filePathStyle`           | 輸出中顯示檔案路徑的方式（`target-relative` 表示路徑相對於每個目標根目錄，`cwd-relative` 表示路徑相對於目前工作目錄）              | `"target-relative"`    |
 | `output.parsableStyle`           | 是否根據所選樣式模式轉義輸出。可以提供更好的解析，但可能會增加令牌數量                                                    | `false`                |
 | `output.compress`                | 是否使用Tree-sitter執行智慧程式碼提取，在保持結構的同時減少令牌數量                                                       | `false`                |
+| `output.compressMode`            | 壓縮的詳細程度：`"signatures"` 保留宣告、簽章和註解；`"calls"` 保留宣告大綱以及每個函式發出的呼叫。請參閱[程式碼壓縮](code-compress) | `"signatures"`         |
 | `output.patterns`                | 每個檔案的包含層級。一個有序的 `{ pattern, compress?, directoryStructureOnly? }` 項目陣列；第一個符合的 glob 優先，並覆寫該檔案的全域 `output.compress` 設定。請參閱[每個檔案的包含層級](#每個檔案的包含層級) | 未設定                 |
 | `output.headerText`              | 要包含在檔案頭部的自訂文字。對於為AI工具提供上下文或指令很有用                                                            | `null`                 |
 | `output.instructionFilePath`     | 包含用於AI處理的詳細自訂指令的檔案路徑                                                                                     | `null`                 |

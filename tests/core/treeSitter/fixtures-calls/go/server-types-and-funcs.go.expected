@@ -1,0 +1,17 @@
+package server
+import ("context" "fmt")
+type Server struct
+  addr string `json:"addr"`
+  repo Repository
+  *log.Logger
+type Repository interface
+  Save(ctx context.Context, o *Order) error
+  io.Closer
+type ID string
+type Handler func(ctx context.Context) error
+const DefaultPort
+const maxConns → computeMax
+var ErrInvalid → errors.New
+func New(addr string, repo Repository) *Server → log.New
+func (s *Server) Place(ctx context.Context, cart *Cart) (*Order, error) → OrderFromCart, validate, s.Printf, fmt.Errorf, metrics.Inc, s.repo.Close, s.repo.Save
+func main() → fmt.Sprintf, newRepo, New, srv.Handler, http.ListenAndServe, log.Fatal

@@ -1,0 +1,20 @@
+package com.acme.orders
+import java.util.List
+import java.util.Map
+@Service public class OrderService extends BaseService implements Placer
+  private static final int MAX_RETRIES
+  private final Map<String, Order> cache → new HashMap<>
+  @Column(name = "repo") private final Repository repo
+  public OrderService(Repository repo) → repo.getName, super
+  @Override public Order place(Cart cart) throws ValidationException → Order.fromCart, validator.validate, order.getId, log.warn, new ValidationException, cart.getLines, .stream, l.qty, .filter, l.sku, inventory.reserve, .forEach, repo.save
+  abstract void audit(Order order)
+  → Registry.register
+enum Status
+  PENDING, SHIPPED
+  private final String code
+  Status(String code)
+  boolean done()
+record Line(String sku, int qty)
+  Line → Objects.requireNonNull
+interface Placer
+  Order place(Cart cart) throws ValidationException

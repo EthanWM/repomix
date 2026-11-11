@@ -117,6 +117,13 @@ describe('configSchema', () => {
       expect(() => v.parse(repomixConfigBaseSchema, invalidConfig)).toThrow(v.ValiError);
     });
 
+    it('should accept each compress mode and reject unknown ones', () => {
+      for (const compressMode of ['signatures', 'calls']) {
+        expect(v.parse(repomixConfigBaseSchema, { output: { compressMode } })).toEqual({ output: { compressMode } });
+      }
+      expect(() => v.parse(repomixConfigBaseSchema, { output: { compressMode: 'outline' } })).toThrow(v.ValiError);
+    });
+
     it('should reject a non-boolean directoryStructureOnly flag', () => {
       const invalidConfig = {
         output: {
@@ -191,6 +198,7 @@ describe('configSchema', () => {
           removeComments: false,
           removeEmptyLines: false,
           compress: false,
+          compressMode: 'signatures',
           topFilesLength: 5,
           showLineNumbers: false,
           truncateBase64: true,
@@ -255,6 +263,7 @@ describe('configSchema', () => {
           removeComments: false,
           removeEmptyLines: false,
           compress: false,
+          compressMode: 'calls',
           topFilesLength: 5,
           showLineNumbers: false,
           truncateBase64: false,
@@ -459,6 +468,7 @@ describe('configSchema', () => {
           removeComments: true,
           removeEmptyLines: false,
           compress: false,
+          compressMode: 'signatures',
           topFilesLength: 10,
           showLineNumbers: true,
           truncateBase64: true,
