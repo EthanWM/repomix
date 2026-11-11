@@ -69,6 +69,20 @@ Please consider sponsoring me.
 
 [![Sponsors](https://cdn.jsdelivr.net/gh/yamadashy/sponsor-list/sponsors/sponsors.png)](https://github.com/sponsors/yamadashy)
 
+## Table of Contents
+
+- [Features](#-features)
+- [Quick Start](#-quick-start)
+- [Usage](#-usage)
+- [Configuration](#-configuration)
+- [Security Check](#-security-check)
+- [Using Repomix with GitHub Actions](#-using-repomix-with-github-actions)
+- [Using Repomix as a Library](#-using-repomix-as-a-library)
+- [Community Projects](#-community-projects)
+- [Contribution](#-contribution)
+- [Privacy Policy](#-privacy-policy)
+- [License](#-license)
+
 ## 🏆 Open Source Awards Nomination
 
 We're honored! Repomix has been nominated for the **Powered by AI** category at the [JSNation Open Source Awards 2025](https://osawards.com/javascript/).
