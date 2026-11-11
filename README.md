@@ -866,7 +866,7 @@ Supported for C#, Go, Java, JavaScript, Python, Rust and TypeScript; other langu
 To run it from this repository's source:
 
 ```bash
-git clone -b ccr-5b8b4a8d-us7mq7 https://github.com/EthanWM/repomix.git
+git clone https://github.com/EthanWM/repomix.git
 cd repomix && npm ci && npm run build
 
 # Run from the target repo, not from inside repomix (its repomix.config.json would apply)
