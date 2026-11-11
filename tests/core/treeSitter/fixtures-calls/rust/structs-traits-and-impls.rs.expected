@@ -1,0 +1,23 @@
+use std::collections::HashMap
+use crate::repo::{Repository, Error}
+#[derive(Debug, Clone)]
+pub struct Order
+  pub id: String
+  lines: Vec<Line>
+pub struct Point(i32, i32)
+pub enum Status { Pending, Shipped { at: u64 }, Failed(String) }
+pub trait Store
+  type Key
+  fn get(&self, id: &str) -> Option<Order>
+  fn save(&mut self, order: Order) -> Result<(), Error> → self.validate, Ok
+const MAX_LINES: usize → compute_max
+static GREETING: &str
+impl<R: Repository> Store for Service<R>
+  type Key = String
+  fn get(&self, id: &str) -> Option<Order> → self.cache.get, .cloned, self.repo.find, .ok, .or_else
+impl Service
+  pub fn new(repo: Box<dyn Repository>) -> Self → println!, HashMap::new
+macro_rules! log_order
+mod tests
+  #[test]
+  fn places_order() → MemRepo::default, Box::new, Service::new, assert!

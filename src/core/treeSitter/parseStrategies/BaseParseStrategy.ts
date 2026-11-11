@@ -9,13 +9,27 @@ export interface ParseContext {
   config: RepomixConfigMerged;
 }
 
+/**
+ * A chunk whose source span differs from its capture node.
+ *
+ * By default parseFile treats a chunk as covering its capture node's rows, which
+ * decides whether it merges with the next chunk or gets a `⋮----` separator. A
+ * strategy that emits only part of a node (e.g. a class header without its
+ * members) returns the last source row it actually consumed, so the header still
+ * merges with a member that follows it directly.
+ */
+export interface ParsedChunk {
+  content: string;
+  endRow: number;
+}
+
 export interface ParseStrategy {
   parseCapture(
     capture: { node: Node; name: string },
     lines: string[],
     processedChunks: Set<string>,
     context: ParseContext,
-  ): string | null;
+  ): string | ParsedChunk | null;
 }
 
 /**
@@ -55,7 +69,7 @@ export abstract class BaseParseStrategy implements ParseStrategy {
     lines: string[],
     processedChunks: Set<string>,
     context: ParseContext,
-  ): string | null;
+  ): string | ParsedChunk | null;
 
   /**
    * Helper method to get capture types from a capture name

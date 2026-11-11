@@ -1,0 +1,19 @@
+global using System.Linq
+using static System.Math
+using Alias = System.Text.StringBuilder
+namespace Acme.Legacy
+  public partial class Café<T> : Base<T>, IDisposable where T : class, new()
+    public int Value { get; set; } → Compute, Store
+    public string Name { get; init; }
+    public int Doubled { get; }
+    static Café() → Init
+    ~Café() → Cleanup
+    void IDisposable.Dispose() → base.Dispose
+    public abstract void Abs()
+    [HttpGet("x")] [Authorize] public IEnumerable<int> Query(int a, int b) → Helper, i.Ok, items.Where, .Select, .ToList, provider.GetService<IFoo>, Make, new Foo, Local, this.Other
+    public event EventHandler Changed { add; remove; } → Hook
+    public void DebugOnly() → Log
+  public record struct Point(int X, int Y)
+  public interface IFoo
+    void A()
+    int B { get; }

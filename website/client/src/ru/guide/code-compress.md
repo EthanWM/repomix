@@ -116,6 +116,64 @@ interface Item {
 - `--remove-empty-lines`: Удаление пустых строк
 - `--output-show-line-numbers`: Добавление номеров строк в вывод
 
+## Режимы сжатия
+
+`--compress-mode` выбирает, сколько деталей сохраняет сжатие, и включает `--compress`:
+
+| Режим | Вывод |
+|------|--------|
+| `signatures` | Объявления, сигнатуры и комментарии, как в примере выше |
+| `calls` | Одна строка на объявление с отступом по вложенности, за которой следуют вызовы из его тела. Тела, комментарии и значения инициализаторов удаляются |
+
+```bash
+repomix --compress-mode calls
+```
+
+Режим `calls` сохраняет граф вызовов, поэтому вывод показывает передачу управления между функциями при малой доле токенов. Этот код на C#:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+превращается в:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` перечисляет вызовы тела в порядке вычисления, каждую цель один раз.
+- Точка в начале (`.ConfigureAwait`) обозначает вызов на результате предыдущего вызова.
+- Строка, начинающаяся с `→`, перечисляет вызовы из операторов верхнего уровня.
+
+Режим `calls` поддерживает C#, Go, Java, JavaScript, Python, Rust и TypeScript. Файлы на других языках сжимаются в режиме `signatures`.
+
+Чтобы задать его в файле конфигурации:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## Связанные ресурсы
 
 - [Удаление комментариев](/ru/guide/comment-removal) - Удаление комментариев для дополнительного уменьшения токенов

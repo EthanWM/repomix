@@ -16,6 +16,7 @@ interface ContentInfo {
     showLineNumbers: boolean;
     parsableStyle: boolean;
     compressed: boolean;
+    callGraph: boolean;
     truncatedBase64: boolean;
   };
   sorting: {
@@ -50,6 +51,7 @@ export const analyzeContent = (config: RepomixConfigMerged): ContentInfo => {
       compressed:
         config.output.compress ||
         (config.output.patterns?.some((p) => p.compress === true && p.directoryStructureOnly !== true) ?? false),
+      callGraph: config.output.compressMode === 'calls',
       truncatedBase64: config.output.truncateBase64,
     },
     sorting: {
@@ -91,7 +93,11 @@ export const generateHeader = (config: RepomixConfigMerged, _generationDate: str
     processingNotes.push(`content has been formatted for parsing in ${config.output.style} style`);
   }
   if (info.processing.compressed) {
-    processingNotes.push('content has been compressed (code blocks are separated by ⋮---- delimiter)');
+    processingNotes.push(
+      info.processing.callGraph
+        ? 'content has been compressed to a call-graph outline (one declaration per line, indented by nesting; "f → a, b" means f calls a then b)'
+        : 'content has been compressed (code blocks are separated by ⋮---- delimiter)',
+    );
   }
   if (!info.processing.securityCheckEnabled) {
     processingNotes.push('security check has been disabled');
@@ -186,7 +192,13 @@ export const generateSummaryNotes = (config: RepomixConfigMerged): string => {
   if (info.processing.parsableStyle) {
     notes.push(`- Content has been formatted for parsing in ${config.output.style} style`);
   }
-  if (info.processing.compressed) {
+  if (info.processing.compressed && info.processing.callGraph) {
+    notes.push(
+      '- Content has been compressed to a call-graph outline: one declaration per line, indented by nesting, with bodies and comments omitted',
+      '- "signature → a, b.c, .d" lists, in evaluation order, the calls made in that body; ".d" is called on the result of the call before it, and a line starting with "→" lists calls made by top-level statements',
+      '- Files in languages without call-graph support are compressed to signatures, with code blocks separated by ⋮---- delimiter',
+    );
+  } else if (info.processing.compressed) {
     notes.push('- Content has been compressed - code blocks are separated by ⋮---- delimiter');
   }
   if (info.processing.truncatedBase64) {

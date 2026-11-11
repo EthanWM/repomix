@@ -25,6 +25,7 @@ describe('calculateGitDiffMetrics', () => {
       removeComments: false,
       removeEmptyLines: false,
       compress: false,
+      compressMode: 'signatures',
       topFilesLength: 10,
       showLineNumbers: false,
       truncateBase64: false,

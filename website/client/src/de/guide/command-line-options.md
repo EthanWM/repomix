@@ -29,6 +29,7 @@ description: "Referenz aller Repomix-CLI-Optionen für Eingabe, Ausgabe, Dateiau
 | `--output-file-path-style <style>` | Darstellung der Dateipfade in der Ausgabe: `target-relative` oder `cwd-relative` (Standard: `target-relative`) |
 | `--parsable-style` | Sonderzeichen escapen, um gültiges XML/Markdown sicherzustellen (nötig wenn die Ausgabe Code enthält, der die Formatierung bricht) |
 | `--compress` | Wesentliche Code-Struktur (Klassen, Funktionen, Interfaces) mittels Tree-sitter-Parsing extrahieren |
+| `--compress-mode <mode>` | Detailgrad der Komprimierung, impliziert `--compress`: `signatures` (Standard) behält Deklarationen und Kommentare; `calls` behält eine Deklarationsübersicht mit den Aufrufen jeder Funktion |
 | `--output-show-line-numbers` | Jede Zeile mit ihrer Zeilennummer in der Ausgabe versehen |
 | `--no-file-summary` | Datei-Zusammenfassungsbereich aus der Ausgabe weglassen |
 | `--no-directory-structure` | Verzeichnisbaum-Visualisierung aus der Ausgabe weglassen |

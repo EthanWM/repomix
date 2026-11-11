@@ -114,6 +114,64 @@ Vous pouvez combiner la compression avec d'autres options:
 - `--remove-empty-lines`: Supprimer les lignes vides
 - `--output-show-line-numbers`: Ajouter les numéros de ligne à la sortie
 
+## Modes de compression
+
+`--compress-mode` choisit le niveau de détail conservé par la compression et implique `--compress` :
+
+| Mode | Sortie |
+|------|--------|
+| `signatures` | Déclarations, signatures et commentaires, comme dans l'exemple ci-dessus |
+| `calls` | Une ligne par déclaration, indentée selon l'imbrication, suivie des appels effectués par son corps. Les corps, les commentaires et les valeurs d'initialisation sont supprimés |
+
+```bash
+repomix --compress-mode calls
+```
+
+Le mode `calls` conserve le graphe d'appels : la sortie montre comment le contrôle circule entre les fonctions pour une fraction des tokens. Ce code C# :
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+devient :
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` liste les appels d'un corps dans l'ordre d'évaluation, chaque cible une seule fois.
+- Un point initial (`.ConfigureAwait`) indique un appel sur le résultat de l'appel précédent.
+- Une ligne commençant par `→` liste les appels effectués par les instructions de premier niveau.
+
+Le mode `calls` prend en charge C#, Go, Java, JavaScript, Python, Rust et TypeScript. Les fichiers des autres langages sont compressés avec le mode `signatures`.
+
+Pour le définir dans votre fichier de configuration :
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## Ressources associées
 
 - [Suppression des commentaires](/fr/guide/comment-removal) - Supprimer les commentaires pour réduire davantage les tokens

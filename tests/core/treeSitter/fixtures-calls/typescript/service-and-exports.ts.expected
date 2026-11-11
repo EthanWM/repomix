@@ -1,0 +1,21 @@
+import { Repository } from './repository'
+import type { Logger } from './logger'
+export enum Status { Pending = 'pending', Shipped = 'shipped' }
+export type OrderId = string
+export interface OrderStore
+  get(id: OrderId): Promise<Order | undefined>
+  readonly size: number
+export class OrderService implements OrderStore
+  private cache → new Map
+  readonly size: number
+  constructor(private readonly repo: Repository, private logger?: Logger) → super
+  async get(id: OrderId): Promise<Order | undefined> → this.cache.get, this.repo.find
+  place = async (cart: Cart, options: { dryRun?: boolean } = {}): Promise<Order> → Order.fromCart, validate, this.logger?.warn, new ValidationError, cart.lines.filter, inventory.reserve, .forEach, this.repo.save
+export const createService = (repo: Repository) → createLogger, new OrderService
+export function validate(order: Order): boolean → rule, rules.every
+const DEFAULT_LIMIT, MAX_LIMIT → computeMax
+export { Repository }
+→ defaultRepo, createService
+declare global { interface Window { orders: OrderService } }
+namespace Internal
+  export function helper() → now, format

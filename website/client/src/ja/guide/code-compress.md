@@ -115,6 +115,64 @@ interface Item {
 - `--remove-empty-lines`: 空行を削除
 - `--output-show-line-numbers`: 出力に行番号を追加
 
+## 圧縮モード
+
+`--compress-mode`は圧縮で残す詳細度を選択します。指定すると`--compress`も有効になります：
+
+| モード | 出力 |
+|------|--------|
+| `signatures` | 宣言、シグネチャ、コメント（上記の例と同じ） |
+| `calls` | 宣言ごとに1行、ネストに応じてインデントし、その本体が行う呼び出しを続けて表示します。本体、コメント、初期化値は削除されます |
+
+```bash
+repomix --compress-mode calls
+```
+
+`calls`モードはコールグラフを保持するため、わずかなトークンで関数間の制御の流れがわかります。次のC#コードは：
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+次のようになります：
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→`は本体が行う呼び出しを評価順に列挙します（同じ呼び出し先は1回のみ）。
+- 先頭のドット（`.ConfigureAwait`）は、直前の呼び出しの結果に対する呼び出しを表します。
+- `→`で始まる行は、トップレベルの文が行う呼び出しを列挙します。
+
+`calls`モードはC#、Go、Java、JavaScript、Python、Rust、TypeScriptに対応しています。その他の言語のファイルは`signatures`モードで圧縮されます。
+
+設定ファイルで指定する場合：
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## 関連リソース
 
 - [コメント削除](/ja/guide/comment-removal) - コメント除去によるさらなるトークン数削減

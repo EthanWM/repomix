@@ -341,6 +341,10 @@ export const buildCliConfig = (options: CliOptions): RepomixConfigCli => {
   if (options.compress !== undefined) {
     cliConfig.output = { ...cliConfig.output, compress: options.compress };
   }
+  // Choosing a compress mode only makes sense with compression, so it implies --compress
+  if (options.compressMode !== undefined) {
+    cliConfig.output = { ...cliConfig.output, compress: true, compressMode: options.compressMode };
+  }
   // Internal MCP-only field: whole-array override of output.patterns from the config file.
   if (options.outputPatterns !== undefined) {
     cliConfig.output = { ...cliConfig.output, patterns: options.outputPatterns };

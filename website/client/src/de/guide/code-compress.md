@@ -116,6 +116,64 @@ Sie können die Komprimierung mit anderen Optionen kombinieren:
 - `--remove-empty-lines`: Leere Zeilen entfernen
 - `--output-show-line-numbers`: Zeilennummern zur Ausgabe hinzufügen
 
+## Komprimierungsmodi
+
+`--compress-mode` legt fest, wie viel Detail die Komprimierung beibehält, und impliziert `--compress`:
+
+| Modus | Ausgabe |
+|------|--------|
+| `signatures` | Deklarationen, Signaturen und Kommentare, wie im obigen Beispiel |
+| `calls` | Eine Zeile pro Deklaration, nach Verschachtelung eingerückt, gefolgt von den Aufrufen, die ihr Rumpf ausführt. Rümpfe, Kommentare und Initialisierungswerte werden entfernt |
+
+```bash
+repomix --compress-mode calls
+```
+
+Der `calls`-Modus erhält den Aufrufgraphen, sodass die Ausgabe mit einem Bruchteil der Tokens zeigt, wie der Kontrollfluss zwischen Funktionen verläuft. Dieser C#-Code:
+
+```csharp
+public class OrderService : IOrderService
+{
+    private readonly IRepository _repo;
+
+    public async Task<Order> PlaceAsync(Cart cart)
+    {
+        var order = Order.FromCart(cart);
+        if (!_validator.Validate(order))
+        {
+            throw new InvalidOperationException();
+        }
+        await _repo.SaveAsync(order).ConfigureAwait(false);
+        return order;
+    }
+}
+```
+
+wird zu:
+
+```text
+public class OrderService : IOrderService
+  private readonly IRepository _repo
+  public async Task<Order> PlaceAsync(Cart cart) → Order.FromCart, _validator.Validate, new InvalidOperationException, _repo.SaveAsync, .ConfigureAwait
+```
+
+- `→` listet die Aufrufe eines Rumpfs in Auswertungsreihenfolge auf, jedes Aufrufziel nur einmal.
+- Ein führender Punkt (`.ConfigureAwait`) kennzeichnet einen Aufruf auf dem Ergebnis des vorherigen Aufrufs.
+- Eine Zeile, die mit `→` beginnt, listet die Aufrufe von Anweisungen auf oberster Ebene auf.
+
+Der `calls`-Modus unterstützt C#, Go, Java, JavaScript, Python, Rust und TypeScript. Dateien in anderen Sprachen werden im `signatures`-Modus komprimiert.
+
+So legen Sie ihn in der Konfigurationsdatei fest:
+
+```json
+{
+  "output": {
+    "compress": true,
+    "compressMode": "calls"
+  }
+}
+```
+
 ## Verwandte Ressourcen
 
 - [Kommentarentfernung](/de/guide/comment-removal) - Kommentare für weitere Token-Reduzierung entfernen

@@ -155,6 +155,12 @@ export const run = async () => {
         '--compress',
         'Extract essential code structure (classes, functions, interfaces) using Tree-sitter parsing',
       )
+      .addOption(
+        new Option(
+          '--compress-mode <mode>',
+          'Compression detail, implies --compress: signatures (default) keeps declarations and comments; calls keeps a declaration outline with the calls each function makes',
+        ).choices(['signatures', 'calls']),
+      )
       .option('--output-show-line-numbers', 'Prefix each line with its line number in the output')
       .option('--no-file-summary', 'Omit the file summary section from output')
       .option('--no-directory-structure', 'Omit the directory tree visualization from output')

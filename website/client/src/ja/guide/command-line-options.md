@@ -29,6 +29,7 @@ description: 入力、出力、ファイル選択、リモートリポジトリ�
 | `--output-file-path-style <style>` | 出力内でのファイルパスの表示方法：`target-relative` または `cwd-relative`（デフォルト：`target-relative`） |
 | `--parsable-style` | 特殊文字をエスケープして有効なXML/Markdownを保証（出力に形式を破損するコードが含まれる場合に必要） |
 | `--compress` | Tree-sitter解析を使用して重要なコード構造（クラス、関数、インターフェース）を抽出 |
+| `--compress-mode <mode>` | 圧縮の詳細度（`--compress`も有効化）：`signatures`（デフォルト）は宣言とコメントを保持し、`calls`は各関数の呼び出しを含む宣言のアウトラインを保持 |
 | `--output-show-line-numbers` | 出力の各行に行番号を付ける |
 | `--no-file-summary` | 出力からファイルサマリーセクションを省略 |
 | `--no-directory-structure` | 出力からディレクトリツリーの可視化を省略 |

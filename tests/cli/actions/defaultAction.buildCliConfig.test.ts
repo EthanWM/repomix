@@ -131,6 +131,13 @@ describe('buildCliConfig', () => {
       ['--header-text', { headerText: 'Hello' }, { output: { headerText: 'Hello' } }],
       ['--header-text with empty string', { headerText: '' }, { output: { headerText: '' } }],
       ['--compress', { compress: true }, { output: { compress: true } }],
+      // A compress mode implies compression
+      ['--compress-mode', { compressMode: 'calls' }, { output: { compress: true, compressMode: 'calls' } }],
+      [
+        '--compress with --compress-mode',
+        { compress: true, compressMode: 'signatures' },
+        { output: { compress: true, compressMode: 'signatures' } },
+      ],
       ['--token-count-encoding', { tokenCountEncoding: 'cl100k_base' }, { tokenCount: { encoding: 'cl100k_base' } }],
       [
         '--instruction-file-path',

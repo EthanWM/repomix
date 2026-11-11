@@ -29,6 +29,7 @@ description: 查阅 Repomix CLI 的所有选项，涵盖输入、输出、文件
 | `--output-file-path-style <style>` | 输出中文件路径的显示方式：`target-relative` 或 `cwd-relative`（默认：`target-relative`） |
 | `--parsable-style` | 转义特殊字符以确保有效的 XML/Markdown（当输出包含破坏格式的代码时需要） |
 | `--compress` | 使用 Tree-sitter 解析提取基本代码结构（类、函数、接口） |
+| `--compress-mode <mode>` | 压缩的详细程度，并启用 `--compress`：`signatures`（默认）保留声明和注释；`calls` 保留声明大纲以及每个函数发出的调用 |
 | `--output-show-line-numbers` | 为输出中的每行添加行号前缀 |
 | `--no-file-summary` | 从输出中省略文件摘要部分 |
 | `--no-directory-structure` | 从输出中省略目录树可视化 |

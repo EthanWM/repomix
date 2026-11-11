@@ -29,6 +29,7 @@ description: "Consultez toutes les options de la CLI Repomix pour l'entrée, la 
 | `--output-file-path-style <style>` | Façon dont les chemins de fichiers sont affichés dans la sortie : `target-relative` ou `cwd-relative` (par défaut : `target-relative`) |
 | `--parsable-style` | Échapper les caractères spéciaux pour assurer un XML/Markdown valide (nécessaire lorsque la sortie contient du code qui casse le formatage) |
 | `--compress` | Extraire la structure essentielle du code (classes, fonctions, interfaces) via l'analyse Tree-sitter |
+| `--compress-mode <mode>` | Niveau de détail de la compression, implique `--compress` : `signatures` (par défaut) conserve les déclarations et commentaires ; `calls` conserve un plan des déclarations avec les appels de chaque fonction |
 | `--output-show-line-numbers` | Préfixer chaque ligne avec son numéro de ligne dans la sortie |
 | `--no-file-summary` | Omettre la section de résumé des fichiers de la sortie |
 | `--no-directory-structure` | Omettre la visualisation de l'arborescence des répertoires de la sortie |

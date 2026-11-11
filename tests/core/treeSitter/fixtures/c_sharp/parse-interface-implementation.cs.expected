@@ -1,7 +1,7 @@
 // Interface definition
-public interface IExample {
+public interface IExample
 void DoSomething();
 ⋮----
 // Implementation
-public class ExampleImpl : IExample {
-public void DoSomething() {
+public class ExampleImpl : IExample
+public void DoSomething()

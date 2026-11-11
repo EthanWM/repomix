@@ -1,22 +1,22 @@
 // Base class
-public class Animal {
-public virtual void Speak() {
+public class Animal
+public virtual void Speak()
 ⋮----
 // Interface for movement
-public interface IMovable {
+public interface IMovable
 void Move();
 ⋮----
 // Interface for sound
-public interface IAudible {
+public interface IAudible
 void Hear();
 ⋮----
 // Mixed inheritance: base class + multiple interfaces
-public class Dog : Animal, IMovable, IAudible {
+public class Dog : Animal, IMovable, IAudible
 // Override Speak from Animal
-public override void Speak() {
+public override void Speak()
 ⋮----
 // Implementation of IMovable
-public void Move() {
+public void Move()
 ⋮----
 // Implementation of IAudible
-public void Hear() {
+public void Hear()

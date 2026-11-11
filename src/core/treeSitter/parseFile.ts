@@ -21,7 +21,8 @@
 import type { Tree } from 'web-tree-sitter';
 import type { RepomixConfigMerged } from '../../config/configSchema.js';
 import { logger } from '../../shared/logger.js';
-import type { SupportedLang } from './languageConfig.js';
+import { renderCallGraph } from './callGraph/renderCallGraph.js';
+import { getLanguageConfigByName, type SupportedLang } from './languageConfig.js';
 import { LanguageParser } from './languageParser.js';
 import { getNodeEndRow, type ParseContext } from './parseStrategies/BaseParseStrategy.js';
 
@@ -74,6 +75,16 @@ export const parseFile = async (
       return undefined;
     }
 
+    // The calls mode renders the tree directly. Languages without a call-graph
+    // spec fall through to the signatures mode below.
+    if (config.output.compressMode === 'calls') {
+      const callGraphSpec = getLanguageConfigByName(lang)?.callGraph;
+      if (callGraphSpec) {
+        return renderCallGraph(tree, fileContent, callGraphSpec);
+      }
+      logger.trace(`No call-graph support for ${lang}; compressing ${filePath} with signatures mode`);
+    }
+
     // Get the appropriate parse strategy for the language
     const parseStrategy = await languageParser.getStrategyForLang(lang);
 
@@ -93,16 +104,20 @@ export const parseFile = async (
     captures.sort((a, b) => a.node.startPosition.row - b.node.startPosition.row);
 
     for (const capture of captures) {
-      const capturedChunkContent = parseStrategy.parseCapture(capture, lines, processedChunks, context);
-      if (capturedChunkContent !== null) {
-        const content = capturedChunkContent.trim();
+      const parsed = parseStrategy.parseCapture(capture, lines, processedChunks, context);
+      if (parsed !== null) {
+        const content = (typeof parsed === 'string' ? parsed : parsed.content).trim();
         const startRow = capture.node.startPosition.row;
         capturedChunks.push({
           content,
           startRow,
           // A strategy may emit lines past the node (e.g. a Ruby =begin block the
-          // grammar ends early), so cover the emitted lines for adjacency merging
-          endRow: Math.max(getNodeEndRow(capture.node), startRow + countLines(content) - 1),
+          // grammar ends early), so cover the emitted lines for adjacency merging.
+          // A strategy that emits only the head of a node reports its own end row.
+          endRow:
+            typeof parsed === 'string'
+              ? Math.max(getNodeEndRow(capture.node), startRow + countLines(content) - 1)
+              : parsed.endRow,
         });
       }
     }
